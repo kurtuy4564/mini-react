@@ -1,6 +1,6 @@
-import { createElement } from './examples/createElement'
-import { useEffect, useState } from './examples/hooks'
-import { render } from './examples/render'
+import { createElement } from './mini-react/createElement'
+import { useEffect, useState } from './mini-react/hooks'
+import { render } from './mini-react/render'
 import './style.css'
 
 const root = document.querySelector<HTMLDivElement>('#app')!

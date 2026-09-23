@@ -1,4 +1,3 @@
-// src/mini-react/render.ts
 import { diffing } from './diffing'
 import { cleanupEffects, finishHooksRender, setRerender, startHooksRender } from './hooks'
 import type { PropsType, VNodeChild, VNodeRender } from './types'
