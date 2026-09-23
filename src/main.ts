@@ -1,17 +1,13 @@
 import { createElement } from './examples/createElement'
-import { render } from './examples/render';
+import { render } from './examples/render'
 import './style.css'
 
-// const element = createElement(
-//   'div',
-//   { className: 'card' },
-//   createElement('h1', null, 'Заголовок'),
-//   createElement('p', null, 'Текст'),
-// )
-
-export const element = createElement(
+const root = document.querySelector<HTMLDivElement>('#app')!
+export const vNode = createElement(
   'div',
   { className: 'app' },
+
+  createElement('button', { onClick: () => console.log('click') }, 'Нажать'),
 
   // Заголовок страницы
   createElement(
@@ -37,8 +33,6 @@ export const element = createElement(
   createElement('footer', { className: 'app__footer' }, '© ', 2025, ' MiniReact'),
 )
 
+console.log(vNode)
 
-console.log(element);
-
-render(element, document.querySelector<HTMLDivElement>('#app')!)
-
+render(vNode, root)
