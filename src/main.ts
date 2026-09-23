@@ -1,13 +1,26 @@
 import { createElement } from './examples/createElement'
+import { useState } from './examples/hooks'
 import { render } from './examples/render'
 import './style.css'
 
+
 const root = document.querySelector<HTMLDivElement>('#app')!
+function Counter() {
+  const [state, setState] = useState(0)
+
+  return createElement(
+    'button',
+    { onClick: () => setState(previous => previous + 1) },
+    'Нажато раз: ',
+    state,
+  )
+}
+
 export const vNode = createElement(
   'div',
   { className: 'app' },
 
-  createElement('button', { onClick: () => console.log('click') }, 'Нажать'),
+  createElement(Counter),
 
   // Заголовок страницы
   createElement(
@@ -32,6 +45,7 @@ export const vNode = createElement(
   // Подвал
   createElement('footer', { className: 'app__footer' }, '© ', 2025, ' MiniReact'),
 )
+
 
 console.log(vNode)
 
