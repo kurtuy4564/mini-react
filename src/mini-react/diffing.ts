@@ -15,17 +15,17 @@ export function diffing(
   newVNode: VNodeChild,
   index: number,
 ): void {
-  // 1. Ничего не изменилось
+  // Ничего не изменилось
   if (oldVNode === newVNode) return
 
-  // 2. Новый пустой → удаляем старый
+  // Новый пустой → удаляем старый
   if (isEmpty(newVNode)) {
     const node = parent.childNodes[index]
     if (node) parent.removeChild(node)
     return
   }
 
-  // 3. Старого не было → создаём новый
+  // Старого не было → создаём новый
   if (isEmpty(oldVNode)) {
     const newNode = mount(newVNode)
     const ref = parent.childNodes[index] ?? null
@@ -34,7 +34,7 @@ export function diffing(
     return
   }
 
-  // 4. Оба текстовые → меняем nodeValue
+  // Оба текстовые → меняем nodeValue
   if (isText(oldVNode) && isText(newVNode)) {
     if (oldVNode !== newVNode) {
       const text = parent.childNodes[index]
@@ -43,25 +43,25 @@ export function diffing(
     return
   }
 
-  // 5. Один текст, другой — VNode → заменяем
+  // Один текст, другой — VNode → заменяем
   if (isText(oldVNode) !== isText(newVNode)) {
     replaceNode(parent, index, newVNode)
     return
   }
 
-  // 6. Оба VNode
+  // Оба VNode
   if (!isVNode(oldVNode) || !isVNode(newVNode)) return
 
   const oldNode = oldVNode
   const newNode = newVNode
 
-  // 6a. Компонент с любой стороны → заменяем (пока без оптимизации)
+  // Компонент с любой стороны → заменяем (пока без оптимизации)
   if (typeof oldNode.type === 'function' || typeof newNode.type === 'function') {
     replaceNode(parent, index, newNode)
     return
   }
 
-  // 6b. Разные теги → заменяем
+  // Разные теги → заменяем
   if (oldNode.type !== newNode.type) {
     replaceNode(parent, index, newNode)
     return
@@ -87,8 +87,6 @@ export function diffing(
   }
 }
 
-// ==================== helpers ====================
-
 function isEmpty(v: unknown): boolean {
   return v === null || v === undefined || v === false || v === true
 }
@@ -108,18 +106,18 @@ function replaceNode(parent: Node, index: number, newVNode: VNodeChild): void {
   else parent.appendChild(newDom)
 }
 
-function updateProps(
-  element: HTMLElement,
-  oldProps: PropsType,
-  newProps: PropsType,
-): void {
+function updateProps(element: HTMLElement, oldProps: PropsType, newProps: PropsType): void {
   const previousProps = oldProps ?? {}
   const nextProps = newProps ?? {}
 
   // Удаляем то, чего нет в новых
   for (const key of Object.keys(previousProps)) {
-    if (key === 'children') continue
-    if (key.startsWith('on')) continue // TODO: снимать обработчики (см. ниже)
+    if (key === 'children') {
+      continue
+    }
+    if (key.startsWith('on')) {
+      continue
+    }
     if (!(key in nextProps)) {
       if (key === 'className') {
         element.className = ''
@@ -131,10 +129,16 @@ function updateProps(
 
   // Ставим новые (только изменившиеся)
   for (const [key, value] of Object.entries(nextProps)) {
-    if (key === 'children') continue
-    if (previousProps[key] === value) continue
+    if (key === 'children') {
+      continue
+    }
+    if (previousProps[key] === value) {
+      continue
+    }
 
-    if (value === null || value === undefined || value === false) continue
+    if (value === null || value === undefined || value === false) {
+      continue
+    }
 
     if (key.startsWith('on') && typeof value === 'function') {
       const eventName = key.slice(2).toLowerCase()
@@ -147,15 +151,15 @@ function updateProps(
       continue
     }
 
-      if (key === 'style' && typeof value === 'object' && value !== null) {
-        Object.assign(element.style, value)
-        continue
-      }
+    if (key === 'style' && typeof value === 'object' && value !== null) {
+      Object.assign(element.style, value)
+      continue
+    }
 
-      if (key === 'value' && 'value' in element) {
-        ;(element as HTMLInputElement).value = String(value)
-        continue
-      }
+    if (key === 'value' && 'value' in element) {
+      element.value = String(value)
+      continue
+    }
 
     element.setAttribute(key, String(value))
   }

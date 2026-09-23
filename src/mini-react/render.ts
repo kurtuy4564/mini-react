@@ -99,7 +99,7 @@ function applyProps(element: HTMLElement, props: PropsType) {
     }
 
     if (key === 'value' && 'value' in element) {
-      ;(element as HTMLInputElement).value = String(value)
+      element.value = String(value)
       continue
     }
 
