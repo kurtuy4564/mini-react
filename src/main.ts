@@ -1,12 +1,19 @@
 import { createElement } from './examples/createElement'
-import { useState } from './examples/hooks'
+import { useEffect, useState } from './examples/hooks'
 import { render } from './examples/render'
 import './style.css'
-
 
 const root = document.querySelector<HTMLDivElement>('#app')!
 function Counter() {
   const [state, setState] = useState(0)
+
+  useEffect(() => {
+    document.title = `Нажато: ${state}`
+
+    return () => {
+      document.title = 'Mini React'
+    }
+  }, [state])
 
   return createElement(
     'button',

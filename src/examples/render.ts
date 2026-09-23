@@ -1,11 +1,18 @@
 // src/mini-react/render.ts
 import { diffing } from './diffing'
-import { setRerender, startHooksRender } from './hooks'
+import { cleanupEffects, finishHooksRender, setRerender, startHooksRender } from './hooks'
 import type { PropsType, VNodeChild, VNodeRender } from './types'
 
 let vNodePrev: VNodeRender | null = null
 
-export function render(vNode: VNodeRender, container: HTMLElement): void {
+export function render(vNode: VNodeRender | null, container: HTMLElement): void {
+  if (vNode === null) {
+    cleanupEffects()
+    container.innerHTML = ''
+    vNodePrev = null
+    return
+  }
+
   startHooksRender()
 
   if (vNodePrev === null) {
@@ -22,6 +29,11 @@ export function render(vNode: VNodeRender, container: HTMLElement): void {
     vNodePrev = null
     render(vNode, container)
   })
+  finishHooksRender()
+}
+
+export function unmount(container: HTMLElement): void {
+  render(null, container)
 }
 
 export function mount(vnode: VNodeChild): Node {
