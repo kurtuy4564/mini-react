@@ -4,56 +4,104 @@ import { render } from './examples/render'
 import './style.css'
 
 const root = document.querySelector<HTMLDivElement>('#app')!
+
 function Counter() {
   const [state, setState] = useState(0)
 
-  useEffect(() => {
-    document.title = `Нажато: ${state}`
-
-    return () => {
-      document.title = 'Mini React'
-    }
-  }, [state])
-
   return createElement(
-    'button',
-    { onClick: () => setState(previous => previous + 1) },
-    'Нажато раз: ',
-    state,
+    'section',
+    { className: 'demo-card' },
+    createElement('h2', null, 'Counter'),
+    createElement('p', null, 'Значение: ', state),
+    createElement(
+      'div',
+      { className: 'button-row' },
+      createElement('button', { onClick: () => setState(previous => previous - 1) }, '−'),
+      createElement('button', { onClick: () => setState(previous => previous + 1) }, '+'),
+    ),
   )
 }
 
-export const vNode = createElement(
-  'div',
-  { className: 'app' },
+function Greeting(props: Record<string, unknown>) {
+  return createElement('section', { className: 'demo-card' }, createElement('h2', null, 'Greeting'), createElement('p', null, 'Привет, ', String(props.name), '!'))
+}
 
-  createElement(Counter),
+function TodoList() {
+  const [todos, setTodos] = useState(['Изучить useState'])
+  const [input, setInput] = useState('')
 
-  // Заголовок страницы
-  createElement(
-    'header',
-    { className: 'app__header' },
-    createElement('h1', null, 'Профиль пользователя'),
-    createElement('p', { className: 'subtitle' }, 'Демонстрация MiniReact'),
-  ),
+  function addTodo() {
+    const title = input.trim()
+    if (!title) return
+    setTodos(previous => [...previous, title])
+    setInput('')
+  }
 
-  // Основная часть
-  createElement(
-    'main',
-    { className: 'app__main' },
+  return createElement(
+    'section',
+    { className: 'demo-card' },
+    createElement('h2', null, 'TodoList'),
+    createElement(
+      'div',
+      { className: 'input-row' },
+      createElement('input', {
+        value: input,
+        placeholder: 'Новая задача',
+        onInput: (event: Event) => setInput((event.target as HTMLInputElement).value),
+      }),
+      createElement('button', { onClick: addTodo }, 'Добавить'),
+    ),
+    createElement(
+      'ul',
+      null,
+      ...todos.map((todo, index) =>
+        createElement(
+          'li',
+          { className: 'todo-item' },
+          todo,
+          createElement('button', { onClick: () => setTodos(previous => previous.filter((_, i) => i !== index)) }, 'Удалить'),
+        ),
+      ),
+    ),
+  )
+}
 
-    // Пустой блок — render должен его корректно обработать
-    createElement('div', { className: 'spacer' }),
+function Timer() {
+  const [seconds, setSeconds] = useState(0)
 
-    // Числовой ребёнок и null
-    createElement('p', { className: 'counter' }, 'Всего карточек: ', 1, null, ' (демо)'),
-  ),
+  useEffect(() => {
+    const interval = window.setInterval(() => setSeconds(previous => previous + 1), 1000)
+    return () => window.clearInterval(interval)
+  }, [])
 
-  // Подвал
-  createElement('footer', { className: 'app__footer' }, '© ', 2025, ' MiniReact'),
-)
+  return createElement('section', { className: 'demo-card' }, createElement('h2', null, 'Timer'), createElement('p', null, 'Прошло секунд: ', seconds))
+}
 
+function ShowHide() {
+  const [visible, setVisible] = useState(true)
 
-console.log(vNode)
+  return createElement(
+    'section',
+    { className: 'demo-card' },
+    createElement('h2', null, 'ShowHide'),
+    createElement('button', { onClick: () => setVisible(previous => !previous) }, visible ? 'Скрыть' : 'Показать'),
+    visible ? createElement('p', null, 'Этот текст можно скрыть.') : null,
+  )
+}
 
-render(vNode, root)
+function App() {
+  return createElement(
+    'div',
+    { className: 'app' },
+    createElement('header', { className: 'app__header' }, createElement('h1', null, 'Mini React'), createElement('p', { className: 'subtitle' }, 'Демонстрация компонентов и хуков')),
+    createElement('main', { className: 'demo-grid' },
+      createElement(Counter),
+      createElement(Greeting, { name: 'разработчик' }),
+      createElement(TodoList),
+      createElement(Timer),
+      createElement(ShowHide),
+    ),
+  )
+}
+
+render(App, root)

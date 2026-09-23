@@ -4,30 +4,37 @@ import { cleanupEffects, finishHooksRender, setRerender, startHooksRender } from
 import type { PropsType, VNodeChild, VNodeRender } from './types'
 
 let vNodePrev: VNodeRender | null = null
+let rootRender: (() => VNodeRender) | null = null
 
-export function render(vNode: VNodeRender | null, container: HTMLElement): void {
+export function render(
+  vNode: VNodeRender | (() => VNodeRender) | null,
+  container: HTMLElement,
+): void {
   if (vNode === null) {
     cleanupEffects()
     container.innerHTML = ''
     vNodePrev = null
+    rootRender = null
     return
   }
 
+  rootRender = typeof vNode === 'function' ? vNode : () => vNode
+  const nextVNode = rootRender()
   startHooksRender()
 
   if (vNodePrev === null) {
     // первый рендер
     container.innerHTML = ''
-    container.appendChild(mount(vNode))
+    container.appendChild(mount(nextVNode))
   } else {
     // обновление
-    diffing(container, vNodePrev, vNode, 0)
+    diffing(container, vNodePrev, nextVNode, 0)
   }
-  vNodePrev = vNode
+  vNodePrev = nextVNode
 
   setRerender(() => {
     vNodePrev = null
-    render(vNode, container)
+    render(rootRender, container)
   })
   finishHooksRender()
 }
