@@ -87,6 +87,7 @@ export function cleanupEffects(): void {
   for (const effect of effects) {
     effect?.cleanup?.()
   }
+  hooks.length = 0
   effects.length = 0
   rerender = null
 }

@@ -22,8 +22,8 @@ function Counter() {
   )
 }
 
-function Greeting(props: Record<string, unknown>) {
-  return createElement('section', { className: 'demo-card' }, createElement('h2', null, 'Greeting'), createElement('p', null, 'Привет, ', String(props.name), '!'))
+function Greeting(props: Record<string, unknown> | null) {
+  return createElement('section', { className: 'demo-card' }, createElement('h2', null, 'Greeting'), createElement('p', null, 'Привет, ', String(props?.name), '!'))
 }
 
 function TodoList() {

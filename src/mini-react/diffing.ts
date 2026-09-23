@@ -147,6 +147,16 @@ function updateProps(
       continue
     }
 
+      if (key === 'style' && typeof value === 'object' && value !== null) {
+        Object.assign(element.style, value)
+        continue
+      }
+
+      if (key === 'value' && 'value' in element) {
+        ;(element as HTMLInputElement).value = String(value)
+        continue
+      }
+
     element.setAttribute(key, String(value))
   }
 }

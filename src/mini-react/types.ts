@@ -1,6 +1,14 @@
-export type VNodeType = string | Function
 export type PropsType = Record<string, unknown> | null
-export type VNodeChild = VNodeRender | string | number | boolean | null | undefined
+export type Component = (props: PropsType) => VNodeRender
+export type VNodeType = string | Component
+export type VNodeChild =
+  | VNodeRender
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | VNodeChild[]
 export type ChildrenType = VNodeChild[]
 
 

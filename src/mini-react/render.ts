@@ -17,9 +17,9 @@ export function render(
     return
   }
 
+  startHooksRender()
   rootRender = typeof vNode === 'function' ? vNode : () => vNode
   const nextVNode = rootRender()
-  startHooksRender()
 
   if (vNodePrev === null) {
     // первый рендер
@@ -93,6 +93,16 @@ function applyProps(element: HTMLElement, props: PropsType) {
 
     if (key === 'className') {
       element.className = String(value)
+      continue
+    }
+
+    if (key === 'style' && typeof value === 'object' && value !== null) {
+      Object.assign(element.style, value)
+      continue
+    }
+
+    if (key === 'value' && 'value' in element) {
+      ;(element as HTMLInputElement).value = String(value)
       continue
     }
 
