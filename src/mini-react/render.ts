@@ -1,14 +1,11 @@
 import { diffing } from './diffing'
 import { cleanupEffects, finishHooksRender, setRerender, startHooksRender } from './hooks'
-import type { PropsType, VNodeChild, VNodeRender } from './types'
+import type { PropsType, VNode, VNodeChild } from './types'
 
-let vNodePrev: VNodeRender | null = null
-let rootRender: (() => VNodeRender) | null = null
+let vNodePrev: VNode | null = null
+let rootRender: (() => VNode) | null = null
 
-export function render(
-  vNode: VNodeRender | (() => VNodeRender) | null,
-  container: HTMLElement,
-): void {
+export function render(vNode: VNode | (() => VNode) | null, container: HTMLElement): void {
   if (vNode === null) {
     cleanupEffects()
     container.innerHTML = ''

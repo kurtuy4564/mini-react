@@ -1,10 +1,10 @@
-import type { ChildrenType, VNodeRender, VNodeType } from './types'
+import type { ChildrenType, VNode, VNodeType } from './types'
 
 export function createElement(
   vNodeType: VNodeType,
   props: Record<string, unknown> | null = {},
   ...children: ChildrenType
-): VNodeRender {
+): VNode {
   return {
     type: vNodeType || 'div',
     props: props ?? {},

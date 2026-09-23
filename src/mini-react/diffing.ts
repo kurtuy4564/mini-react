@@ -1,4 +1,4 @@
-import type { PropsType, VNodeChild, VNodeRender } from './types'
+import type { PropsType, VNodeChild, VNode } from './types'
 import { mount } from './render'
 
 /**
@@ -97,7 +97,7 @@ function isText(v: unknown): v is string | number {
   return typeof v === 'string' || typeof v === 'number'
 }
 
-function isVNode(v: VNodeChild): v is VNodeRender {
+function isVNode(v: VNodeChild): v is VNode {
   return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
 
